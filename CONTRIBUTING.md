@@ -32,7 +32,7 @@ Today I finally worked out how classes work in Java...
 | --- | --- | --- |
 | `title` | yes | |
 | `date` | yes | `YYYY-MM-DD` |
-| `authors` | yes | Your handle, matching a file in `authors/` |
+| `authors` | yes | Your GitHub username. You must be one of the authors of a post you submit |
 | `tags` | no | Lowercase, words joined with `-` (e.g. `game-dev`) |
 | `summary` | no | A 1-2 sentence summary. If you skip it, the start of the post is used. |
 
@@ -48,13 +48,12 @@ Put images in your post's folder, next to `index.md`, and refer to them by file 
 - Write alt text (the part in the square brackets) describing the image.
 - Only use images you have the right to share. See the [rules](RULES.md#your-own-work).
 
-## Your Author Profile
+## Your Author Profile (optional)
 
-Create `authors/your-handle.md`:
+By default, authors are shown with their GitHub & Discord username and avatar. To add a display name and short bio, create `authors/your-github-username.md`:
 ```markdown
 ---
 name: Your Name or Nickname
-discord: "123456789012345678"
 ---
 
 A sentence or two about you as a short bio. Linking to other sites (GitHub, socials, etc) is allowed!
