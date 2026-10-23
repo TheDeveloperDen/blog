@@ -1,6 +1,5 @@
 ---
 title: My first post
-date: 2026-01-01
 authors: [your-github-username]
 tags: [example]
 ---

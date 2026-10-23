@@ -20,7 +20,6 @@ Copy [`posts/_template/`](posts/_template/) to get started. A post is a Markdown
 ```markdown
 ---
 title: My first post
-date: 2026-10-22
 authors: [your-handle]
 tags: [java, learning]
 ---
@@ -31,7 +30,6 @@ Today I finally worked out how classes work in Java...
 | Field | Required | Notes |
 | --- | --- | --- |
 | `title` | yes | |
-| `date` | yes | `YYYY-MM-DD` |
 | `authors` | yes | Your GitHub username. You must be one of the authors of a post you submit |
 | `tags` | no | Lowercase, words joined with `-` (e.g. `game-dev`) |
 | `summary` | no | A 1-2 sentence summary. If you skip it, the start of the post is used. |
