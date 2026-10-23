@@ -1,0 +1,32 @@
+# Test the validator, running checks, formatters, linters, etc
+name: Tools CI
+on:
+  pull_request:
+    paths: [tools/**, flake.nix, flake.lock, .github/**]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Formatting and lint
+        run: nix flake check
+
+      - name: Tests and types
+        run: |
+          nix develop --command bash -c '
+            cd tools
+            bun install --frozen-lockfile
+            bun test
+            bun run typecheck
+          '
