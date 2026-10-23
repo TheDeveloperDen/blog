@@ -1,0 +1,15 @@
+# Runs when a PR is merged, telling the website to rebuild
+name: Publish
+on:
+  push:
+    branches: [master]
+    paths: [posts/**, authors/**]
+permissions: {}
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tell the website to rebuild
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: gh api "repos/TheDeveloperDen/website/dispatches" --field event_type=blog-updated
