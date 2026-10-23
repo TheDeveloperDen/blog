@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    # Only for biome since stable is a bit behind
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -22,7 +24,12 @@
       imports = [ inputs.treefmt-nix.flakeModule ];
 
       perSystem =
-        { config, pkgs, ... }:
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
         {
           treefmt = {
             projectRootFile = "flake.nix";
@@ -30,7 +37,13 @@
               nixfmt.enable = true;
               yamlfmt.enable = true;
               actionlint.enable = true;
-              biome.enable = true;
+              biome = {
+                enable = true;
+                package = inputs.nixpkgs-unstable.legacyPackages.${system}.biome;
+                settings = builtins.fromJSON (builtins.readFile ./biome.json);
+                # the schema is a bit old so fails on a modern config
+                validate.enable = false;
+              };
             };
           };
 
