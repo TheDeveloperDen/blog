@@ -8,31 +8,25 @@
 #   - the secret is passed to the one step that runs the trusted validator.
 # Do NOT add steps that run, install or build anything inside `pr/`.
 name: Validate posts
-
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
-
 permissions:
   contents: read
   pull-requests: write
-
 concurrency:
   group: validate-${{ github.event.pull_request.number }}
   cancel-in-progress: true
-
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-
       - name: Check out the validator's tools directory to `trusted/`
         uses: actions/checkout@v4
         with:
           path: trusted
           sparse-checkout: tools
           persist-credentials: false
-
       - name: Check out the PR's files to `pr/`
         uses: actions/checkout@v4
         with:
@@ -40,14 +34,10 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           path: pr
           persist-credentials: false
-
       - uses: oven-sh/setup-bun@v2
-      
       - name: Install validator dependencies
         working-directory: trusted/tools
         run: bun install --frozen-lockfile
-
-      
       - name: Validate
         working-directory: trusted/tools
         env:
