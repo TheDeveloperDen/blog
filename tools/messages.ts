@@ -17,6 +17,14 @@ export interface FieldHelp {
 const exampleOf = (name: string, { example }: FieldHelp) =>
 	`It should look like \`${name}: ${example}\`.`;
 
+/** A clickable link to a repository file on GitHub's default branch when run in Actions, else just its path. */
+function templateLink(path: string): string {
+	const repo = process.env.GITHUB_REPOSITORY;
+	return repo
+		? `[\`${path}\`](https://github.com/${repo}/blob/HEAD/${path})`
+		: `\`${path}\``;
+}
+
 const FENCE_HELP = "starting and ending with a line of `---`";
 
 export const messages = {
@@ -49,9 +57,7 @@ export const messages = {
 
 	needsFrontmatter: (what: "post" | "profile") =>
 		`Your ${what} needs a block of details at the very top, ${FENCE_HELP}.` +
-		(what === "post"
-			? " See `posts/_template/index.md` for an example."
-			: "See `authors/_template.md` for an example"),
+		` See ${templateLink(what === "post" ? "posts/_template/index.md" : "authors/_template.md")} for an example.`,
 
 	frontmatterUnreadable: (
 		code: yaml.ErrorCode,
