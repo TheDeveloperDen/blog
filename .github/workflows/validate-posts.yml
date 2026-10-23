@@ -1,0 +1,60 @@
+# Checks the files a PR adds (posts, profiles) and whether the author may post.
+#
+# This action runs on `pull_request_target` so it can uses secrets on PRs from forks.
+# It's very important therefore that we NEVER execute anything from the PR, which could leak secrets!
+# I am quite confident this is safe, but any changes need to be carefully reviewed:
+#   - the validator code comes from `master`
+#   - the PR's files are checked out to `pr/` and are only ever read as data
+#   - the secret is passed to the one step that runs the trusted validator.
+# Do NOT add steps that run, install or build anything inside `pr/`.
+name: Validate posts
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: validate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out the validator's tools directory to `trusted/`
+        uses: actions/checkout@v4
+        with:
+          path: trusted
+          sparse-checkout: tools
+          persist-credentials: false
+
+      - name: Check out the PR's files to `pr/`
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@v2
+      
+      - name: Install validator dependencies
+        working-directory: trusted/tools
+        run: bun install --frozen-lockfile
+
+      
+      - name: Validate
+        working-directory: trusted/tools
+        env:
+          ROOT: ${{ github.workspace }}/pr
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          ELIGIBILITY_URL: ${{ secrets.ELIGIBILITY_URL }}
+          ELIGIBILITY_TOKEN: ${{ secrets.ELIGIBILITY_TOKEN }}
+        run: bun run validate
