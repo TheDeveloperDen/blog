@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { PostSchema } from "./frontmatter";
 import { messages } from "./messages";
-import { makeRepo, removeRepos } from "./testing";
+import { makeFakeRepo, removeRepos } from "./testing";
 import { validate } from "./validate";
 
 const POST = "---\ntitle: Hi\nauthors: [alice]\n---\n\nHello\n";
@@ -29,7 +29,7 @@ function messagesFor(
 					!changedFiles || changedFiles.some((file) => file.startsWith(prefix)),
 			}
 		: undefined;
-	return validate(makeRepo(files), pr).map((p) => p.message);
+	return validate(makeFakeRepo(files), pr).map((p) => p.message);
 }
 
 const postWith = (body: string) => `${POST}${body}`;
@@ -132,7 +132,7 @@ describe("where problems are", () => {
 		// Pick line and column only: Markdown positions also carry an `offset`.
 		const pick = (p?: { line: number; column: number }) =>
 			p && { line: p.line, column: p.column };
-		return validate(makeRepo(files)).map((p) => [
+		return validate(makeFakeRepo(files)).map((p) => [
 			pick(p.span?.start),
 			pick(p.span?.end),
 		]);
