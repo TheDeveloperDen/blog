@@ -10,6 +10,10 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,14 +25,13 @@
         "aarch64-darwin"
       ];
 
-      imports = [ inputs.treefmt-nix.flakeModule ];
+      imports = [ inputs.treefmt-nix.flakeModule inputs.git-hooks.flakeModule ];
 
       perSystem =
-        {
-          config,
-          pkgs,
-          system,
-          ...
+        { config
+        , pkgs
+        , system
+        , ...
         }:
         {
           treefmt = {
@@ -47,7 +50,10 @@
             };
           };
 
+          pre-commit.settings.hooks.nixpkgs-fmt.enable = true;
+
           devShells.default = pkgs.mkShellNoCC {
+            inputsFrom = [ config.pre-commit.devShell ];
             packages = [
               pkgs.bun
               config.treefmt.build.wrapper
