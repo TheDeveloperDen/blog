@@ -25,13 +25,17 @@
         "aarch64-darwin"
       ];
 
-      imports = [ inputs.treefmt-nix.flakeModule inputs.git-hooks.flakeModule ];
+      imports = [
+        inputs.treefmt-nix.flakeModule
+        inputs.git-hooks.flakeModule
+      ];
 
       perSystem =
-        { config
-        , pkgs
-        , system
-        , ...
+        {
+          config,
+          pkgs,
+          system,
+          ...
         }:
         {
           treefmt = {
@@ -50,7 +54,7 @@
             };
           };
 
-          pre-commit.settings.hooks.nixpkgs-fmt.enable = true;
+          pre-commit.settings.hooks.treefmt.enable = true;
 
           devShells.default = pkgs.mkShellNoCC {
             inputsFrom = [ config.pre-commit.devShell ];
