@@ -1,0 +1,30 @@
+{
+	"name": "blog-tools",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"validate": "bun cli.ts",
+		"test": "bun test",
+		"typecheck": "tsc",
+		"lint": "biome check",
+		"fix": "biome check --write"
+	},
+	"dependencies": {
+		"@babel/code-frame": "^8.0.6",
+		"@octokit/rest": "^22.0.1",
+		"mdast-util-from-markdown": "^2.1.0",
+		"mdast-util-frontmatter": "^2.0.1",
+		"micromark-extension-frontmatter": "^2.0.0",
+		"unist-util-visit": "^5.1.0",
+		"yaml": "^2.9.1",
+		"zod": "^4.6.7"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.6.2",
+		"@octokit/openapi-types": "^29.0.1",
+		"@types/babel__code-frame": "^7.27.0",
+		"@types/bun": "^1.4.4",
+		"@types/mdast": "^4.0.4",
+		"typescript": "^7.0.2"
+	}
+}
