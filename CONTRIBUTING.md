@@ -66,10 +66,10 @@ A sentence or two about you as a short bio. Linking to other sites (GitHub, soci
 3. Write the post, then click Commit changes and choose to create a Pull Request.
 4. To add an image, open your new folder and use **Add file** -> **Upload files**.
 
-## What happens next
+## What happens next
 
 1. **Automatic checks** run on your PR. If any fail, the message should say what to fix. You can edit your files and push again.
-2. A **staff member reviews** the post. They may ask for changes. This is normal.
+2. A **staff member reviews** the post. They may ask for changes, this is normal and nothing to worry about!
 3. When it's approved and merged, the post appears on the website shortly afterwards.
 
 ## Changing or removing a post
