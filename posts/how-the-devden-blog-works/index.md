@@ -35,4 +35,25 @@ In terms of technical architecture, we need to weigh up a **push vs pull archite
 - A push-based architecture would involve the blog repository sending "push" notifications to the clients saying "a new post was added!"
 - A pull-based architecture instead makes all the clients "subscribe" to the blog's source. In practice, this usually involves them repeatedly checking "did a new post arrive?".
 
-In my honest opinion, both options kind of suck here. Push based has the coupling problems (the blog repo has to know about its subscribers), and the pull approach means updates can be delayed, and we risk being rate limited by GitHub.
+In my honest opinion, both options kind of suck here. 
+Push based has the coupling problems (the blog repo has to know about its subscribers), and the pull approach means updates can be delayed, and we risk being rate limited by GitHub. 
+
+
+Ultimately, I decided on push-based, mainly for simplicity, but also because we need coupling no matter what:
+to get eligibility checking, we need some way of letting the blog tell if a **Github User** making a Pull Request is **in the Discord** and over Level 30.
+
+The implementation of this is quite simple: have the Discord Bot register a GitHub OAuth app which links your accounts, and then expose a tiny HTTP API to query a Discord user from a GitHub user.
+Initially, I wanted to make this API public to simplify the coupling, until I realised this is kind of a terrible idea from a privacy perspective -- a public way to get someone's Discord username from their GitHub account is not a good idea.
+
+So, we need some coupling either way. In this case, we went with the simplest possible solution: the API requires a secret token that only the blog's GitHub Secrets knows.
+
+
+## Implementation
+
+### The Bot
+
+The Discord Bot contained the smallest set of changes overall. The additions boiled down to 3 things:
+1. Adding the GitHub Linking (mostly already done in a PR by Rooki, conveniently)
+2. Adding the authenticated HTTP API
+3. Adding another HTTP API that the blog can call to say "some new posts were added, please post them to the server"
+
