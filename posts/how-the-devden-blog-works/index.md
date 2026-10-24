@@ -47,6 +47,15 @@ Initially, I wanted to make this API public to simplify the coupling, until I re
 
 So, we need some coupling either way. In this case, we went with the simplest possible solution: the API requires a secret token that only the blog's GitHub Secrets knows.
 
+### Dating
+
+Initially, posts had a simple date field in their frontmatter to mark when they're published.
+I wasn't a big fan of this -- it's another possible point of failure, whether from accidentally omitting the field or putting the wrong value.
+This adds extra complexity to both the author and the validation code. 
+
+Fortunately, a far more elegant solution comes for free: **the Git history**!
+We simply say that a post was published whenever its .md file was first added into the master branch. No ambiguity, no manual checks needed, it just works! :)
+
 
 ## Implementation
 
@@ -66,3 +75,48 @@ a framework for making static sites in the [Elm](https://elm-lang.org) programmi
 because it already comes with support for generating pages from Markdown files,
 while still allowing us to add our own processing and content around it.
 
+elm-pages has an ahead-of-time build stage that turns the Elm into mostly-static HTML. 
+This has a few pros and cons: the website is faster and more SEO friendly, 
+but when the pages' content come from an external source, it becomes a bit more difficult to work with.
+We can't dynamically lookup a blog post's content since everything has to be static
+
+No matter! We can make the best of this. We added a new build stage that clones the blog repository, does some basic sanity checks,
+and then processes the posts to be compatible with elm-pages. This involves stuff like moving images to the right directory so relative URLs work,
+and indexing all the posts by author and tags to generate the pages for those. Every post gets its own Elm page,
+with SEO and all the nicities of a normal website. The git-based publishing date feature is also much more convenient this way.Doing these things dynamically would be way harder, and probably involve some kind of permanently running API for the blog posts.
+
+Doing everything statically also means we can do syntax highlighting at compile time, which 
+is a lot faster and avoids more client-side JavaScript. In the future we might do stuff like image compression or an RSS feed too.
+
+And that's pretty much it! A few TypeScript scripts for build-time processing, a couple new Elm files per page, and some fairly simple CSS. Nice!
+
+The only other thing worth mentioning here is the GitHub Actions wiring: the website repository has an action that rebuilds and redeploys the
+site with the latest blog contents. It uses the `repository_dispatch` trigger so that the blog repository can tell the website to rebuild itself when a new
+post is added. This unfortunately is breaking motivation 4 a little, but it's the simplest possible solution that's fairly reliable
+
+### The Blog
+
+The hardest bit was coming up with some good rules for posting! The blog is deliberately very simple: 
+a folder for optional author bios, and then one folder per post.
+In order to achieve our motivation of keeping it simple, we want two things: **automated reviews with good feedback** and **any code out of the way** to not intimidate beginners.
+
+The `tools` folder contains the bulk of this code: a small TypeScript Tool that validates
+all the posts in the repository, or all the posts changed in a Pull Request.
+
+These validation checks are quite involved and designed to be "idiot-proof" (not in a condescending way!). We check for lots of possible
+mistakes, and try to give detailed explanations for how to fix the issue. 
+Where GitHub allows us, we submit the feedback as diff review comments on the problematic lines, and otherwise as a general comment.
+This can be ran locally to test before you commit too! 
+
+Whenever a PR is made, we run this script to check that any changes are okay. If so, it's time for a human content review!
+
+Finally, on a merge to master, we run a separate action to signal to the two services (web and bot) that they can update.
+
+TypeScript was mainly chosen because it has good support (e.g. a GitHub API library), is quick to write,
+and still gives us a reasonable degree of safety. Plus, I quite like it. There are probably better choices but they would've taken so much longer to make this in :)
+
+
+--- 
+
+Anyway, thanks for reading! This first draft was written on my phone so it probably isn't the best formatting,
+but I hope this was entertaining enough :) More importantly, I'm excited to see what posts everyone submits to the blog!
