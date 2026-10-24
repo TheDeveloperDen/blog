@@ -1,10 +1,11 @@
-# Runs when a PR is merged, telling the website to rebuild
+# Runs when a PR is merged, telling the website to rebuild and the Discord bot to announce new posts
 name: Publish
 on:
   push:
     branches: [master]
     paths: [posts/**, authors/**]
-permissions: {}
+permissions:
+  contents: read
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -13,3 +14,15 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
         run: gh api "repos/TheDeveloperDen/website/dispatches" --field event_type=blog-updated
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+      - name: Announce new posts in Discord
+        env:
+          ANNOUNCE_URL: ${{ secrets.ANNOUNCE_URL }}
+          ANNOUNCE_TOKEN: ${{ secrets.ELIGIBILITY_TOKEN }}
+          BEFORE: ${{ github.event.before }}
+        working-directory: tools
+        run: bun install --frozen-lockfile && bun announce.ts
