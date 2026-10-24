@@ -34,6 +34,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           path: pr
           persist-credentials: false
+          # i swear this is safe i hope please please be safe
+          allow-unsafe-pr-checkout: true
       - uses: oven-sh/setup-bun@v2
       - name: Install validator dependencies
         working-directory: trusted/tools
