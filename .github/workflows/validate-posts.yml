@@ -22,13 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the validator's tools directory to `trusted/`
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: trusted
           sparse-checkout: tools
           persist-credentials: false
       - name: Check out the PR's files to `pr/`
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
