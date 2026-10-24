@@ -1,6 +1,8 @@
 ---
-title: "pee"
+title: "Test Real Blog Post"
 authors: [bristermitten]
 ---
 
-# is this good?
+# Welcome to the DevDen Blog!
+
+How exciting!
