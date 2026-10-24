@@ -37,8 +37,7 @@ Who is Brice Matt?
 A member asked `chickens`, "who invented the computer?"
 
 It responded:
->tim<br>
->bob 611
+>tim bob 611
 
 Thank you, tim bob 611 for your contribution to society.
 
@@ -90,8 +89,7 @@ upon it's insistence that it was "busy." `chickens` replied:
 It was perfection out the gate. "Oh my god, this is the greatest thing ever."
 said Brister Mitten. `chickens` replied:
 
-> boy now ya mad<br>
-> I can pull ya out and hurt ya
+> boy now ya mad I can pull ya out and hurt ya
 
 Indeed, he had hit gold.
 
