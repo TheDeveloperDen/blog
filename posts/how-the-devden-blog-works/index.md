@@ -57,3 +57,12 @@ The Discord Bot contained the smallest set of changes overall. The additions boi
 2. Adding the authenticated HTTP API
 3. Adding another HTTP API that the blog can call to say "some new posts were added, please post them to the server"
 
+There is not really much interesting going on here to be honest
+
+### The Website
+
+For the website implementation, we conveniently are already using [`elm-pages`](https://elm-pages.com/), 
+a framework for making static sites in the [Elm](https://elm-lang.org) programming language. This is useful
+because it already comes with support for generating pages from Markdown files,
+while still allowing us to add our own processing and content around it.
+
